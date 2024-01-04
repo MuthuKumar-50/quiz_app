@@ -3,8 +3,6 @@ import React from "react";
 function Options({ question, answer, dispatch }) {
   const hansAnswered = answer !== null;
 
-  console.log(`options : ${question}`);
-
   return (
     <div className="options">
       {question.options.map((option, index) => (
