@@ -9,7 +9,8 @@
     {
       "question": "Which company invented React?",
       "options": ["Google", "Apple", "Netflix", "Facebook"],
-      "correctOption": 3
+      "correctOption": 3,
+      "points": 10
     },
     {
       "question": "What's the fundamental building block of React apps?",
