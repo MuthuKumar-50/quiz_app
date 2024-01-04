@@ -7,12 +7,14 @@ import StartScreen from "./StartScreen";
 import Questions from "./Questions";
 import NextButton from "./NextButton";
 import Progress from "./Progress";
+import EndScreen from "./EndScreen";
 
 const initialState = {
   questions: [],
   index: 0,
   answer: null,
   points: 0,
+  highScore: 0,
   status: "loading", // loading, error | ready, active, finished
 };
 
@@ -61,6 +63,26 @@ function reducer(state, action) {
       };
     }
 
+    case "restart": {
+      return {
+        ...state,
+        questions: state.questions,
+        status: "ready",
+        answer: null,
+        index: 0,
+        points: 0,
+      };
+    }
+
+    case "finished": {
+      return {
+        ...state,
+        status: "finished",
+        highScore:
+          state.points > state.highScore ? state.points : state.highScore,
+      };
+    }
+
     default: {
       throw new Error("Unhandled Action Type");
     }
@@ -68,18 +90,11 @@ function reducer(state, action) {
 }
 
 function App() {
-  const [{ status, questions, index, answer, points }, dispatch] = useReducer(
-    reducer,
-    initialState
-  );
+  const [{ status, questions, index, answer, points, highScore }, dispatch] =
+    useReducer(reducer, initialState);
 
   const numQuestions = questions.length || 0;
   const maxPoints = questions.reduce((prev, curr) => {
-    // console.log(curr);
-    // console.log(`Prev = ${prev}`);
-    // console.log(`Current Value  = ${curr.points}`);
-    // console.log(`${prev} + ${curr.points}  === ${prev + curr.points}`);
-
     return prev + curr.points;
   }, 0);
 
@@ -125,8 +140,21 @@ function App() {
               dispatch={dispatch}
               answer={answer}
             />
-            <NextButton dispatch={dispatch} answer={answer} />
+            <NextButton
+              numOfQuestions={numQuestions}
+              dispatch={dispatch}
+              answer={answer}
+              index={index}
+            />
           </>
+        ) : null}
+        {status === "finished" ? (
+          <EndScreen
+            points={points}
+            maxPossiblePoints={maxPoints}
+            highScore={highScore}
+            dispatch={dispatch}
+          />
         ) : null}
       </Main>
     </div>
